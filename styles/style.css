@@ -1,0 +1,67 @@
+/* Structural Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /* A light shade of black */
+    background-color: #1a1a1a; 
+    color: #f2f2f2;
+    font-family: system-ui, -apple-system, sans-serif;
+    
+    /* Flexbox protocol to center the container */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.timer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    
+    /* Pushing it slightly above the horizontal middle line */
+    transform: translateY(-10vh);
+}
+
+.time-display {
+    /* Monospace is critical for timers so the width of '1' and '0' are identical, 
+       preventing horizontal jittering when ticking down */
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 8rem;
+    font-weight: bold;
+    letter-spacing: 0.2rem;
+    
+    /* Removing the default outline when the user clicks to edit */
+    outline: none;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom 0.2s ease-in-out;
+}
+
+/* Structural feedback when the user is actively editing the buffer */
+.time-display:focus {
+    border-bottom: 2px solid #555;
+}
+
+.control-btn {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 1rem 3rem;
+    font-size: 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.control-btn:hover {
+    background-color: #555;
+}
+
+.control-btn:active {
+    transform: scale(0.98);
+}
