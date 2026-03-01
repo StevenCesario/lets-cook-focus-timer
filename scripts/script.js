@@ -33,3 +33,7 @@ const ViewRenderer = {
         timeDisplay.textContent = this.formatTime(StateBuffer.totalSeconds);
     }
 }
+
+// INITIALIZATION
+// When the script first runs, make sure the DOM matches our State
+ViewRenderer.updateDisplay();

@@ -439,3 +439,111 @@ This is why, as we move toward the Timer's logic, we have to be very careful wit
 **Ready for the next step?**
 
 We need to tackle the **Input Firewall**—the logic that prevents the user from typing letters into the `contenteditable` buffer. We’ll be using `keydown` and the `preventDefault()` protocol we discussed earlier. Shall I reveal the code for the Firewall?🌱
+
+
+I love the pragmatic bias toward action. _The Pragmatic Programmer_ calls this building **"Tracer Bullets"**—**==getting a single, end-to-end path working before building the defensive walls (like the Input Firewall).==**
+
+To make the timer tick, we need three new architectural blocks:
+
+1. **The Parser:** A tool to translate the user's string (e.g., `"45:00"`) back into our primitive integer (`2700` seconds).
+    
+2. **The Engine:** The logic that controls the flow of time using `setInterval`.
+    
+3. **The Hardware Trigger:** The click listener that acts as the switch.
+    
+
+Here is the "Wire" for these three blocks. Add this directly below your `ViewRenderer`.
+
+```
+// ==========================================
+// 5. The Parser (DOM String -> Primitive Integer)
+// ==========================================
+const TimeParser = {
+    parseToSeconds(timeString) {
+        // Strip out any accidental spaces
+        const cleanString = timeString.trim();
+        // Split the string into an array at the colon
+        const parts = cleanString.split(':');
+        
+        if (parts.length === 2) {
+            // Base 10 parsing
+            const minutes = parseInt(parts[0], 10) || 0;
+            const seconds = parseInt(parts[1], 10) || 0;
+            return (minutes * 60) + seconds;
+        } else {
+            // Fallback: If they just typed "45" without a colon, assume minutes.
+            const minutes = parseInt(parts[0], 10) || 0;
+            return minutes * 60;
+        }
+    }
+};
+
+// ==========================================
+// 6. The Engine (The Event Loop Protocol)
+// ==========================================
+const TimerEngine = {
+    start() {
+        // 1. Scrape the current string from the DOM and update our Source of Truth
+        const rawText = timeDisplay.textContent;
+        StateBuffer.totalSeconds = TimeParser.parseToSeconds(rawText);
+        
+        // Safety check: Don't start a zero-second timer
+        if (StateBuffer.totalSeconds <= 0) return;
+
+        // 2. Lock the buffer (prevent user editing while running)
+        timeDisplay.setAttribute("contenteditable", "false");
+        StateBuffer.isRunning = true;
+        startBtn.textContent = "Pause";
+
+        // 3. The Heartbeat
+        // setInterval tells the Browser API to drop this arrow function 
+        // into the Task Queue every 1000 milliseconds.
+        StateBuffer.intervalId = setInterval(() => {
+            StateBuffer.totalSeconds--;
+            ViewRenderer.updateDisplay();
+
+            // The Stop Condition
+            if (StateBuffer.totalSeconds <= 0) {
+                this.stop();
+            }
+        }, 1000);
+    },
+
+    stop() {
+        // clearInterval halts the Browser API from sending more tasks to the Queue
+        clearInterval(StateBuffer.intervalId);
+        StateBuffer.intervalId = null;
+        StateBuffer.isRunning = false;
+        
+        // Unlock the buffer and reset the button
+        timeDisplay.setAttribute("contenteditable", "true");
+        startBtn.textContent = "Start";
+    }
+};
+
+// ==========================================
+// 7. The Hardware Trigger (The Click Event)
+// ==========================================
+startBtn.addEventListener('click', () => {
+    if (StateBuffer.isRunning) {
+        TimerEngine.stop();
+    } else {
+        TimerEngine.start();
+    }
+});
+```
+
+## Socratic Trace for the Logical Buffer
+
+1. **The Parsing Protocol (`parseInt`):** In C++, parsing a string to an integer requires strict memory buffers and functions like `stoi()`. In JS, `parseInt(string, radix)` handles it. **==We pass `10` as the radix to strictly enforce Base-10 math, ensuring a string like `"08"` isn't accidentally parsed as an octal (Base-8) number.==**
+    
+2. **The `setInterval` Mechanism:** This is the core of JS asynchronous behavior. When you call `setInterval`, the **[[Runtime]]** delegates the counting to the [[The V8 Engine|Web API (the "Foreign Office")]]. The main **[[Stack#Call Stack|Call Stack]]** continues its work. Exactly every 1000ms, _the Web API pushes your callback function onto the **[[Task Queue]]**._
+    
+3. **The `clearInterval` Hook:** `setInterval` returns a unique ID (an integer). We store this in `StateBuffer.intervalId`. It is literally a [[Pointers|pointer]] to that specific background process. To kill the background process, we hand that ID to `clearInterval()`.
+    
+
+## The Build Verification
+
+Save your file and click the text in your browser. Change `00:00` to `00:05`, click outside the box, and press "Start."
+
+Does the timer tick down to `00:00` and stop? Once you verify the structural integrity of this "Tracer Bullet," would you like to build the `localStorage` protocol to survive a page refresh, or tackle the Input Firewall next?
