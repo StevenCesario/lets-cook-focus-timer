@@ -58,3 +58,43 @@ const TimeParser = {
         }
     }
 };
+
+// EVENT LOOP
+const TimerEngine = {
+    start() {
+        // 1. Scrape the current string from the DOM and update our Source of Truth
+        const rawText = timeDisplay.textContent;
+        StateBuffer.totalSeconds = TimeParser.parseToSeconds(rawText);
+
+        // Safety check: Don't start a zero-second timer
+        if (StateBuffer.totalSeconds <= 0) return;
+
+        // 2. Lock the buffer! We don't want the user to be able to edit anything 
+        // while the timer is running
+        timeDisplay.setAttribute("contenteditable", "false");
+        StateBuffer.isRunning = true;
+        startBtn.textContent = "Pause";
+
+        // 3. The "Heartbeat" using setInterval
+        StateBuffer.intervalId = setInterval(() => {
+            StateBuffer.totalSeconds--;
+            ViewRenderer.updateDisplay();
+
+            // Our Stop condition
+            if (StateBuffer.totalSeconds <= 0) {
+                this.stop();
+            }
+        }, 1000);
+    },
+
+    stop() {
+        // Halt the Browser API from sending more tasks to the Task Queue
+        clearInterval(StateBuffer.intervalId);
+        StateBuffer.intervalId = null;
+        StateBuffer.isRunning = false;
+
+        // Unlock the buffer again and reset the button
+        timeDisplay.setAttribute("contenteditable", "true");
+        startBtn.textContent = "Lock In";
+    }
+};
