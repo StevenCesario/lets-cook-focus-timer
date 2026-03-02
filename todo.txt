@@ -1,0 +1,2 @@
+* "Anti-letters Firewall"
+* localStorage implementation
