@@ -61,5 +61,12 @@ const TimeParser = {
 
 // EVENT LOOP
 const TimerEngine = {
-    // To be added
+    start() {
+        // 1. Scrape the current string from the DOM and update our Source of Truth
+        const rawText = timeDisplay.textContent;
+        StateBuffer.totalSeconds = TimeParser.parseToSeconds(rawText);
+
+        // Safety check: Don't start a zero-second timer
+        if (StateBuffer.totalSeconds <= 0) return;
+    }
 }
