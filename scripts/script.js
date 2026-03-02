@@ -37,3 +37,8 @@ const ViewRenderer = {
 // INITIALIZATION
 // When the script first runs, make sure the DOM matches our State
 ViewRenderer.updateDisplay();
+
+// TIME PARSER (DOM String -> Primitive Integer)
+const timeParser = {
+    // To be added
+}
