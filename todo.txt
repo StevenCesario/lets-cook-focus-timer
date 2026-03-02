@@ -1,3 +1,4 @@
 * "Anti-letters Firewall"
 * localStorage implementation
 * Preventing more than two numbers on either side of the colon?
+* What should happen when the timer reaches 00:00?
