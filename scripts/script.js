@@ -68,5 +68,11 @@ const TimerEngine = {
 
         // Safety check: Don't start a zero-second timer
         if (StateBuffer.totalSeconds <= 0) return;
+
+        // 2. Lock the buffer! We don't want the user to be able to edit anything 
+        // while the timer is running
+        timeDisplay.setAttribute("contenteditable", "false");
+        StateBuffer.isRunning = true;
+        startBtn.textContent = "Pause";
     }
 }
