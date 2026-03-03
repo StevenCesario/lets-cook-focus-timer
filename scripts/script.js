@@ -95,6 +95,11 @@ const TimerEngine = {
     }
 };
 
+// INPUT "FIREWALL"
+timeDisplay.addEventListener('keydown', () => {
+    
+})
+
 // CLICK EVENT
 startBtn.addEventListener('click', () => {
     if (StateBuffer.isRunning) {
