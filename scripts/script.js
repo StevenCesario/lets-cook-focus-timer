@@ -105,6 +105,15 @@ timeDisplay.addEventListener('keydown', (e) => {
 
     // Allow numeric keys (0-9) using simple Regex
     const isNumber = /^[0-9]$/.test(e.key);
+
+    // We need to allow the colon
+    const isColon = e.key === ':';
+
+    // Our rule: If it's NOT a number, NOT a control key, and NOT a colon...
+    if (!isNumber && !isControlKey && !isColon) {
+        // ...prevent it from even reaching the DOM
+        e.preventDefault();
+    }
 })
 
 // CLICK EVENT
