@@ -103,6 +103,8 @@ timeDisplay.addEventListener('keydown', (e) => {
         'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter'
     ].includes(e.key);
 
+    // Allow numeric keys (0-9) using simple Regex
+    const isNumber = /^[0-9]$/.test(e.key);
 })
 
 // CLICK EVENT
