@@ -98,8 +98,23 @@ const TimerEngine = {
 // LOCALSTORAGE
 // Helper object to handle the string <-> integer conversion
 const StorageManager = {
-    // To be implemented
-}
+    // The key we'll use in localStorage
+    KEY: "focus_timer_seconds",
+
+    save(seconds) {
+        localStorage.setItem(this.KEY, seconds.toString());
+    },
+
+    load() {
+        const storageData = localStorage.getItem(this.KEY);
+        // If data exists, parse it to an integer. If not, return null
+        return storageData ? parseInt(storageData, 10) : null;
+    },
+
+    clear() {
+        localStorage.removeItem(this.KEY);
+    }
+};
 
 // INPUT "FIREWALL"
 timeDisplay.addEventListener('keydown', (e) => {
