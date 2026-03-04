@@ -106,9 +106,8 @@ const TimerEngine = {
         StateBuffer.intervalId = null;
         StateBuffer.isRunning = false;
 
-        // Unlock the buffer again and reset the button
-        timeDisplay.setAttribute("contenteditable", "true");
-        startBtn.textContent = "Lock In";
+        // UPDATED: Refined Pause button behavior. No editing and "Continue" as the new text
+        startBtn.textContent = "Continue";
 
         // UPDATE: Ensure we save the exact amount of seconds in localStorage
         StorageManager.save(StorageManager.SECONDS_KEY, StateBuffer.totalSeconds);
