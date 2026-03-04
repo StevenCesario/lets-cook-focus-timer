@@ -1016,3 +1016,119 @@ This is a **Defensive Boundary**.
 **The State of the System:** You have the **Firewall** and the **Persistence** logic ready. We just need to wire them into the **Initialization** and the **Engine** to make the "Anti-Rage" guarantee active.
 
 When you are ready, would you like to perform the **Initialization** logic (checking storage on load) or the **Engine Update** (saving every second)? 🌱
+
+
+Your architectural intuition is firing on all cylinders! The realization that your `stop()` method is currently behaving like a `reset()` method is a massive **"Profound Click."** In Systems Architecture, we call this a **State Machine Definition**.
+
+- **Running State:** Clock ticking, UI locked.
+    
+- **Paused State:** Clock stopped, UI _still locked_.
+    
+- **Reset/Stopped State:** Clock stopped, UI unlocked, buffers cleared.
+    
+
+By realizing this, you've naturally discovered the need for **distinct "Behaviors" rather than mashing them into a single toggle.**
+
+Let's lay the **View Layer** foundation for your Intention feature. Since you want the minute value to be dynamic (`${CURRENT_TIMER_MINUTE_VALUE}`), we need to isolate that specific number in the HTML so our JavaScript "Pointer" can update it later without overwriting the rest of the sentence.
+
+Here is the plain text HTML and CSS to match your existing orthogonal structure.
+
+## The HTML Update
+
+
+```
+<body>
+    <main class="timer-container">
+        <div id="time-display" class="time-display" contenteditable="true" spellcheck="false">
+            45:00
+        </div>
+
+        <div class="intention-container">
+            <label for="intention-input" id="intention-prompt" class="intention-prompt">
+                What is your intention for these <span id="prompt-mins">45</span> minutes?
+            </label>
+            <input 
+                type="text" 
+                id="intention-input" 
+                class="intention-input" 
+                placeholder="e.g., Complete the first 5 exercises..."
+                autocomplete="off"
+                spellcheck="false"
+            >
+        </div>
+        
+        <button id="start-btn" class="control-btn">Lock In</button>
+    </main>
+</body>
+```
+
+## The CSS Update
+
+Add this to your `style.css` file. We will style the input to feel like a natural extension of the `time-display`—minimalist, utilizing border-bottom for focus state, and seamlessly blending into the `#1a1a1a` background.
+
+
+```
+/* ==========================================
+   Intention UI
+   ========================================== */
+.intention-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    max-width: 500px; /* Prevents the input from stretching too far on wide screens */
+}
+
+.intention-prompt {
+    font-size: 1.1rem;
+    color: #a0a0a0; /* A muted gray to keep hierarchy focused on the timer */
+    text-align: center;
+}
+
+.intention-input {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid #333;
+    color: #f2f2f2;
+    font-size: 1.2rem;
+    text-align: center;
+    padding: 0.5rem;
+    font-family: inherit;
+    transition: border-bottom 0.2s ease-in-out;
+}
+
+/* Structural feedback when the user is actively typing their intention */
+.intention-input:focus {
+    outline: none;
+    border-bottom: 2px solid #888;
+}
+
+/* The "Locked" state (to be triggered by JS later) */
+.intention-input:disabled {
+    color: #555;
+    border-bottom: 2px solid transparent;
+    cursor: not-allowed;
+}
+```
+
+## Synthesis for the Logical Buffer
+
+1. **The `<span>` Tag:** Notice `<span id="prompt-mins">45</span>`. A `<span>` is the ultimate "inline" structural container. It does absolutely nothing on its own, which makes it perfect for wrapping a specific piece of text so we can attach an `id` pointer to it.
+    
+2. **The `:disabled` Pseudo-class:** In CSS, `:disabled` automatically styles an element when JavaScript sets its `disabled` attribute to `true`. This maintains our **Orthogonality**—JavaScript handles the logic (`intentionInput.disabled = true`), and CSS natively reacts to that state change without JS needing to manually alter colors.
+    
+
+**The Handoff:** Your View Layer is now ready.
+
+When you are ready to write the JavaScript, we will need to:
+
+1. Grab the new DOM Pointers (`intention-input` and `prompt-mins`).
+    
+2. Dynamically update `prompt-mins` whenever the user types in the `time-display` (perhaps by adding a listener to the `time-display` that fires when they hit Enter or click away).
+    
+3. Inject the `disabled` lock in your `start()` logic.
+    
+
+Would you like to build the dynamic "Minute Prompt Updater" first, or handle the "Input Locking" logic? 🌱
