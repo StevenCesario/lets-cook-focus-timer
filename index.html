@@ -13,7 +13,19 @@
             45:00
         </div>
 
-        <!-- Intention Input to be added here -->
+        <div class="intention-container">
+            <label for="intention-input" id="intention-prompt" class="intention-prompt">
+                What is your intention for these <span id="prompt-mins">45</span> minutes?
+            </label>
+            <input 
+                type="text" 
+                id="intention-input" 
+                class="intention-input" 
+                placeholder="e.g., Complete the first 3 exercises of..."
+                autocomplete="off"
+                spellcheck="false"
+            >
+        </div>
         
         <button id="start-btn" class="control-btn">Lock In</button>
     </main>
