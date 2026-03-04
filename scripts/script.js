@@ -111,7 +111,11 @@ const TimerEngine = {
     },
 
     reset() {
-        this.haltBrowserAPI();
+        if(confirm("Are you sure you want to completely reset the timer?")) {
+            // Simply halt the Browser API and clear the session
+            this.haltBrowserAPI();
+            StorageManager.clearSession();
+        }
     },
 
     haltBrowserAPI() {
