@@ -95,6 +95,12 @@ const TimerEngine = {
     }
 };
 
+// LOCALSTORAGE
+// Helper object to handle the string <-> integer conversion
+const StorageManager = {
+    // To be implemented
+}
+
 // INPUT "FIREWALL"
 timeDisplay.addEventListener('keydown', (e) => {
     // We want to still allow "control" keys. Without these, the user wouldn't be able 
@@ -121,6 +127,7 @@ timeDisplay.addEventListener('keydown', (e) => {
         timeDisplay.blur(); // Remove focus from the element
     }
 });
+
 
 // CLICK EVENT
 startBtn.addEventListener('click', () => {
