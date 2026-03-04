@@ -187,7 +187,7 @@ startBtn.addEventListener('click', () => {
         TimerEngine.start();
 
         // UPDATE: Store the user intention in localStorage!
-        StorageManager.save_intention(intentionInput.value);
+        StorageManager.save_intention(intentionInput.value.trim());
     }
 });
 
