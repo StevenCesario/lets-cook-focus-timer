@@ -154,8 +154,17 @@ startBtn.addEventListener('click', () => {
 });
 
 // INITIALIZATION
-// When the script first runs, make sure our State and DOM match. Start with the 45:00 from the HTML
-const rawText = timeDisplay.textContent;
-StateBuffer.totalSeconds = TimeParser.parseToSeconds(rawText);
+// Now updated to check localStorage before anything
+const localStorageData = StorageManager.load();
 
+if (localStorageData !== null) {
+    // If it's not null, it means that there is seconds saved. Update the StateBuffer to use it!
+    StateBuffer.totalSeconds = localStorageData;
+} else {
+    // Start with the 45:00 from the HTML that we had earlier
+    const rawText = timeDisplay.textContent;
+    StateBuffer.totalSeconds = TimeParser.parseToSeconds(rawText);
+}
+
+// Ensure the View matches our Source of Truth
 ViewRenderer.updateDisplay();
