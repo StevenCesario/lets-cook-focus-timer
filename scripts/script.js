@@ -216,6 +216,9 @@ startBtn.addEventListener('click', () => {
         if (StateBuffer.intentionEndScreen) {
             // Use the now-isolated reset method!
             TimerEngine.reset();
+
+            // Forgot this. Also set intentionEndScreen back to false!
+            StateBuffer.intentionEndScreen = false;
         } else {
             TimerEngine.start();
     
