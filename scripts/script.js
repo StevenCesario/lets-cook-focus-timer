@@ -13,6 +13,7 @@ const StateBuffer = {
     totalSeconds: 0,
     isRunning: false,
     intervalId: null,
+    intentionEndScreen: false,
 }
 
 // VIEW RENDERER (Our "Mirror")
@@ -104,6 +105,9 @@ const TimerEngine = {
 
                 // Hide the Reset button
                 resetBtn.classList.add('invisible');
+
+                // Use our new intentionEndScreen bool in StateBuffer!
+                StateBuffer.intentionEndScreen = true;
 
                 // Clear localStorage
                 StorageManager.clearSession();
@@ -210,6 +214,10 @@ startBtn.addEventListener('click', () => {
     if (StateBuffer.isRunning) {
         TimerEngine.pause();
     } else {
+        // UPDATE: Are we at the intentionEndScreen?
+        if (StateBuffer.intentionEndScreen) {
+            // To be added
+        }
         TimerEngine.start();
 
         // UPDATE: Store the user intention in localStorage!
