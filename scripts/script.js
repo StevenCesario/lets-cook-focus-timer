@@ -212,17 +212,19 @@ startBtn.addEventListener('click', () => {
     if (StateBuffer.isRunning) {
         TimerEngine.pause();
     } else {
-        // UPDATE: Are we at the intentionEndScreen?
+        // UPDATE: First check! Are we at the intentionEndScreen?
         if (StateBuffer.intentionEndScreen) {
-            // To be added
+            // Use the now-isolated reset method!
+            TimerEngine.reset();
+        } else {
+            TimerEngine.start();
+    
+            // UPDATE: Store the user intention in localStorage!
+            StorageManager.save(StorageManager.INTENTION_KEY, intentionInput.value.trim());
+    
+            // UPDATE: Show the Reset button! Now using the invisible class rather than the hidden property
+            resetBtn.classList.remove('invisible');
         }
-        TimerEngine.start();
-
-        // UPDATE: Store the user intention in localStorage!
-        StorageManager.save(StorageManager.INTENTION_KEY, intentionInput.value.trim());
-
-        // UPDATE: Show the Reset button! Now using the invisible class rather than the hidden property
-        resetBtn.classList.remove('invisible');
     }
 });
 
