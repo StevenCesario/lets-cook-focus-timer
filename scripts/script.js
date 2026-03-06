@@ -157,7 +157,7 @@ const TimerEngine = {
         intentionInput.disabled = true;
 
         // UPDATE: Show the Reset button! Now using the invisible class rather than the hidden property
-        resetBtn.classList.remove('invisible'); // This should most likely not be toggle
+        resetBtn.classList.remove('invisible');
 
         // UPDATE: Swap the intention prompts
         intentionPrompt.hidden = true;
