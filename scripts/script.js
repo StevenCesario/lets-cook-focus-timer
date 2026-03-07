@@ -301,7 +301,16 @@ intentionInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         intentionInput.blur();
     }
-})
+});
+
+document.addEventListener('keydown', (e) => {
+    // Only allow the "Enter to start the timer" logic to trigger if we are
+    // currently not focusing on the timer or the intention input; in other
+    // words if the activeElement is the body, not timeDisplay or intentionInput
+    if ( e.key === 'Enter' && document.activeElement === document.body) { 
+        TimerEngine.start();
+    }
+});
 
 startBtn.addEventListener('click', () => {
     if (StateBuffer.isRunning) {
