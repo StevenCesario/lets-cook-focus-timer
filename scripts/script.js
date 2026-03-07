@@ -351,3 +351,4 @@ if (localStorageIntention !== null) {
 
 // Ensure the View matches our Source of Truth
 ViewRenderer.updateDisplay();
+// timeDisplay.focus(); To be added?
