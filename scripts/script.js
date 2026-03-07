@@ -300,13 +300,23 @@ timeDisplay.addEventListener('keydown', (e) => {
 intentionInput.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') {
         intentionInput.blur();
+        // UPDATE: If the intention input is *invalid*, there should still be focus!
+        // const rawIntention = intentionInput.value;
+        // const validatedIntention = Validator.validateIntention(rawIntention);
+        // if (validatedIntention === null) {
+        //     intentionInput.blur(); // Blur only if there is no error in the intention input! 
+        // }
+        // I can't implement this right now, I'm missing something. I'll return to this
+        // But you could also arugu that the UX is *better* by removing the focus every
+        // time there is an invalid input to further highlight that it is actually being
+        // validated and that the error message has been *generated* rather than that it 
+        // is stuck in place
     }
 });
 
 document.addEventListener('keydown', (e) => {
-    // Only allow the "Enter to start the timer" logic to trigger if we are
-    // currently not focusing on the timer or the intention input; in other
-    // words if the activeElement is the body, not timeDisplay or intentionInput
+    // For now we allow the timer to start and the intention input to be validated in 
+    // the *same* ENTER key press!
     if ( e.key === 'Enter' && document.activeElement === document.body) { 
         TimerEngine.start();
     }
