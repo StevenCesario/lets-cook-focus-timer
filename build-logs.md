@@ -1876,3 +1876,64 @@ if (!intentionInput.disabled) {
     
 
 Try adding the CSS hover rule and the defensive `.focus()` logic. Does this resolve the UX conflict in a way that feels elegant to you? And once it does, are we ready to dive into the deep end with the **Digits Validation**? 🌱
+
+
+This is a classic "Scope vs. Logic" puzzle! Your logic with `document.activeElement` is incredibly sharp and exactly the right tool for the job. You correctly discovered that `.focus()` and `.blur()` manipulate the browser's active cursor state, not static HTML attributes.
+
+Your "Gap in Intuition" isn't in your `if/else` logic—it's in **==where your listener is standing==**.
+
+Let's dissect the "Physics" of your Event Listeners.
+
+## Node 1: The "Microphone" Scope (Why the intention input doesn't blur)
+
+Look at the very first line of the code block you are tinkering in: `timeDisplay.addEventListener('keydown', (e) => { ... })`
+
+**==You have attached the "Microphone" (the event listener) directly to the `timeDisplay` box.==**
+
+- When you click inside `timeDisplay` and press Enter, the microphone hears it. It runs your code.
+    
+- When you click inside `intentionInput` and press Enter, the keypress happens inside a completely different room. The `timeDisplay` microphone hears absolutely nothing. Therefore, your `intentionInput.blur()` code is never even triggered.
+    
+
+**The Structural Reality:** To make the intention input blur when you hit Enter, you have to attach a dedicated microphone to it, just like you did for the timer:
+
+```
+intentionInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        intentionInput.blur();
+    }
+});
+```
+
+## Node 2: The Global Hotkey (Why the timer doesn't start)
+
+Now let's apply that same "Microphone" logic to your global hotkey idea.
+
+If you click on the background of the website (the `<body>`) and press Enter, where does the event happen? It happens on the `document`. Since your microphone is still locked inside the `timeDisplay` box, it misses the keypress entirely.
+
+To create a **Global Hotkey** (a key that works no matter where you are clicking, as long as you aren't typing in an input), you must attach the listener to the highest level of the DOM: the `document` itself.
+
+## Node 3: Your `activeElement` Logic
+
+Your intuition here was brilliant: `if (document.activeElement !== timeDisplay && document.activeElement !== intentionInput)`
+
+This is a perfectly valid and highly pragmatic way to check the state! `document.activeElement` returns a direct pointer to the DOM node that currently has the cursor.
+
+**==_(Side note on your other attempt: If you ever want to check if the body has focus, you don't use the string `'BODY'`. You compare it directly to the DOM object: `document.activeElement === document.body`)_.==**
+
+## The Pragmatic Architecture
+
+Instead of mashing all of this into the "Firewall" listener, we should separate our concerns (Orthogonality!):
+
+1. **The Timer Firewall:** `timeDisplay.addEventListener(...)` - Only handles blocking letters and blurring the timer.
+    
+2. **The Intention Listener:** `intentionInput.addEventListener(...)` - Only handles blurring the intention input.
+    
+3. **The Global Hotkey:** `document.addEventListener(...)` - Listens to the whole page for the "Enter" key and starts the timer _if_ the inputs are safely out of focus.
+    
+
+**The Action Plan:** Leave your `timeDisplay` firewall exactly as it was when we finished it yesterday. Don't add the start logic there.
+
+Instead, create a new `document.addEventListener('keydown', ...)` block. Place your excellent `document.activeElement` logic inside it.
+
+Try wiring up that global listener using your `document.activeElement` check! Does setting up a "Global Microphone" make the event routing click into place?
