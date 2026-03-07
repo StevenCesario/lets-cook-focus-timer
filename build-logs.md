@@ -1811,3 +1811,68 @@ To fix this, we need to guarantee that the `error-message` span takes up exactly
 By setting a `min-height`, the CSS Engine draws a box that is 1.5rem tall, **regardless of whether your JS has injected text or if the text is an empty string `""`.** When the validator fails, the text just populates inside that **already-drawn box.** The layout remains absolutely frozen.
 
 Drop those CSS and HTML tweaks in and purposefully trigger the error. Does the container stand its ground like a rock now? Once it does, what part of the **Digits Validation** logic are we dissecting first? 🌱
+
+
+You have just stumbled into one of the most classic debates in Systems Design and UX architecture: **==The Hierarchy of Action vs. Discoverability.==** Your intuition is perfectly tuned here. **==_When you have two inputs "fighting for focus," you must act as the traffic controller._==** Let's break down the pragmatic way to navigate this using the **Structural Duality** of User Experience.
+
+## Node 1: The Hierarchy of Action (Who gets the focus?)
+
+You hit the nail on the head: _"The timer won't start unless they fill in a valid intention."_
+
+- **The Timer:** Has a **_==sensible, functional default==_** (`45:00`). Editing it is **==Optional==**.
+    
+- **The Intention:** Is completely blank. Filling it is **Mandatory**.
+    
+
+**The Pragmatic Rule:** **Auto-focus should always eliminate friction for the _required_ path. If the user visits the site, the very first thing they _must_ do to use the app is type an intention. Therefore, `intentionInput.focus();` is the absolute correct choice. It drops their cursor right where the engine needs data.**
+
+## Node 2: The Discoverability Problem (Fixing the Timer)
+
+Now we address your brother's feedback: _"It's not intuitive that you can edit the digits."_
+
+If a user doesn't realize an element is editable, auto-focusing it is a "Band-Aid" solution. As soon as they click away to type their intention, the timer goes back to looking like static text, and the discoverability is lost again.
+
+**==Instead of stealing the cursor's focus, we fix discoverability in the View Layer (CSS). We need to tell the user's brain, _"Hey, this is interactive,"_ before they even click it.==**
+
+**The CSS Solution:** **==Add a hover state to the `.time-display` in your `style.css`.==** When the user moves their mouse over the giant numbers, the cursor should change, and perhaps the bottom border should subtly appear to hint at its input-nature.
+
+```
+/* Add this below your existing .time-display rules */
+.time-display:hover {
+    cursor: text; /* Changes the mouse pointer to the 'I-beam' text cursor */
+    border-bottom: 2px solid #333; /* A subtle hint that it's an input field */
+}
+```
+
+## Node 3: The "Awake State" Caveat
+
+If you choose to implement `intentionInput.focus();` in your Initialization block, **==you must code it defensively!==**
+
+Remember your `localStorage` implementation? **==If a user refreshes the page _while_ they are in the middle of a 45-minute focus session, the app awakes in the "Locked In" state.==**
+
+**==If you blindly run `intentionInput.focus();` at the bottom of the script, the browser will try to focus a disabled input, which can cause erratic scrolling or console warnings.==**
+
+**The Implementation:** **==You only want to grant focus if the app is waking up in a "Day 0" (fresh) state:==**
+
+```
+// At the very bottom of Initialization:
+ViewRenderer.updateDisplay();
+
+// Only focus the intention input if it is NOT disabled (meaning no active session was loaded)
+if (!intentionInput.disabled) {
+    intentionInput.focus();
+}
+```
+
+---
+
+## Synthesis Check
+
+1. **Action:** The cursor automatically lands in the Intention field, guiding the user to the mandatory task.
+    
+2. **Discoverability:** The Timer digits now reveal a text-cursor and an underline when hovered, intuitively communicating "I am editable" without stealing the user's focus.
+    
+3. **Safety:** The auto-focus respects the `localStorage` state machine.
+    
+
+Try adding the CSS hover rule and the defensive `.focus()` logic. Does this resolve the UX conflict in a way that feels elegant to you? And once it does, are we ready to dive into the deep end with the **Digits Validation**? 🌱
