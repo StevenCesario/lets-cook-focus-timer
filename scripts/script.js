@@ -351,4 +351,8 @@ if (localStorageIntention !== null) {
 
 // Ensure the View matches our Source of Truth
 ViewRenderer.updateDisplay();
-// timeDisplay.focus(); To be added?
+
+// UPDATE: Only focus the intention input if it is NOT disabled (meaning no active session was loaded)
+if (!intentionInput.disabled) {
+    intentionInput.focus(); // We add focus to the mandatory Intention Input over the Optional Timer Display input
+}
